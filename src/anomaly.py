@@ -42,11 +42,16 @@ def DFriend_purchases(DFriends, T, purchase_tot):
     for friend_id in DFriends:
         if friend_id in purchase_tot:
             purchase.extend(purchase_tot[friend_id])
-    tmp = sorted(purchase, key=lambda x: x[0])
-    tmp2 = tmp[-T::]
-    #recent_purchases = [x[1] for x in tmp2]
-    recent_purchases = list(map(itemgetter(1), tmp2))
-    purchases_num = len(recent_purchases)
+            
+    purchase_tot_num = len(purchase)
+    if purchase_tot_num >= T:
+        tmp = heapq.nlargest(T, purchase, key=lambda x:x[0])
+        purchases_num = T
+    else:
+        tmp = purchase
+        purchases_num = purchase_tot_num
+    recent_purchases = [x[1] for x in tmp]
+            
     network_mean = np.mean(recent_purchases)
     network_std = np.std(recent_purchases)
     return purchases_num, network_mean, network_std
